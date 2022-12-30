@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity >=0.8.1;
-
-import {ERC20} from "@rari-capital/solmate/src/tokens/ERC20.sol";
+pragma solidity 0.8.17;
 
 /// @title ERC4626 interface
 /// See: https://eips.ethereum.org/EIPS/eip-4626
-abstract contract IERC4626 is ERC20 {
+interface IERC4626  {
     /*////////////////////////////////////////////////////////
                       Events
     ////////////////////////////////////////////////////////*/
@@ -65,51 +63,51 @@ abstract contract IERC4626 is ERC20 {
     /// @notice The amount of shares that the vault would
     /// exchange for the amount of assets provided, in an
     /// ideal scenario where all the conditions are met.
-    function convertToShares(uint256 assets) external view virtual returns (uint256 shares);
+    function convertToShares(uint256 assets) external view returns (uint256 shares);
 
     /// @notice The amount of assets that the vault would
     /// exchange for the amount of shares provided, in an
     /// ideal scenario where all the conditions are met.
-    function convertToAssets(uint256 shares) external view virtual returns (uint256 assets);
+    function convertToAssets(uint256 shares) external view returns (uint256 assets);
 
     /// @notice Total number of underlying assets that can
     /// be deposited by `owner` into the Vault, where `owner`
     /// corresponds to the input parameter `receiver` of a
     /// `deposit` call.
-    function maxDeposit(address owner) external view virtual returns (uint256 maxAssets);
+    function maxDeposit(address owner) external view returns (uint256 maxAssets);
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their deposit at the current block, given
     /// current on-chain conditions.
-    function previewDeposit(uint256 assets) external view virtual returns (uint256 shares);
+    function previewDeposit(uint256 assets) external view returns (uint256 shares);
 
     /// @notice Total number of underlying shares that can be minted
     /// for `owner`, where `owner` corresponds to the input
     /// parameter `receiver` of a `mint` call.
-    function maxMint(address owner) external view virtual returns (uint256 maxShares);
+    function maxMint(address owner) external view returns (uint256 maxShares);
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their mint at the current block, given
     /// current on-chain conditions.
-    function previewMint(uint256 shares) external view virtual returns (uint256 assets);
+    function previewMint(uint256 shares) external view returns (uint256 assets);
 
     /// @notice Total number of underlying assets that can be
     /// withdrawn from the Vault by `owner`, where `owner`
     /// corresponds to the input parameter of a `withdraw` call.
-    function maxWithdraw(address owner) external view virtual returns (uint256 maxAssets);
+    function maxWithdraw(address owner) external view returns (uint256 maxAssets);
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their withdrawal at the current block,
     /// given current on-chain conditions.
-    function previewWithdraw(uint256 assets) external view virtual returns (uint256 shares);
+    function previewWithdraw(uint256 assets) external view returns (uint256 shares);
 
     /// @notice Total number of underlying shares that can be
     /// redeemed from the Vault by `owner`, where `owner` corresponds
     /// to the input parameter of a `redeem` call.
-    function maxRedeem(address owner) external view virtual returns (uint256 maxShares);
+    function maxRedeem(address owner) external view returns (uint256 maxShares);
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their redeemption at the current block,
     /// given current on-chain conditions.
-    function previewRedeem(uint256 shares) external view virtual returns (uint256 assets);
+    function previewRedeem(uint256 shares) external view returns (uint256 assets);
 }
