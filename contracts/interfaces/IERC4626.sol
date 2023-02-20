@@ -22,11 +22,11 @@ interface IERC4626  {
 
     /// @notice The address of the underlying ERC20 token used for
     /// the Vault for accounting, depositing, and withdrawing.
-    function asset() external view virtual returns (address asset);
+    function asset() external view returns (address assets);
 
     /// @notice Total amount of the underlying asset that
     /// is "managed" by Vault.
-    function totalAssets() external view virtual returns (uint256 totalAssets);
+    function totalAssets() external view returns (uint256 totalAssets);
 
     /*////////////////////////////////////////////////////////
                       Deposit/Withdrawal Logic
@@ -34,11 +34,11 @@ interface IERC4626  {
 
     /// @notice Mints `shares` Vault shares to `receiver` by
     /// depositing exactly `assets` of underlying tokens.
-    function deposit(uint256 assets, address receiver) external virtual returns (uint256 shares);
+    function deposit(uint256 assets, address receiver) external returns (uint256 shares);
 
     /// @notice Mints exactly `shares` Vault shares to `receiver`
     /// by depositing `assets` of underlying tokens.
-    function mint(uint256 shares, address receiver) external virtual returns (uint256 assets);
+    function mint(uint256 shares, address receiver) external returns (uint256 assets);
 
     /// @notice Redeems `shares` from `owner` and sends `assets`
     /// of underlying tokens to `receiver`.
@@ -46,7 +46,7 @@ interface IERC4626  {
         uint256 assets,
         address receiver,
         address owner
-    ) external virtual returns (uint256 shares);
+    ) external returns (uint256 shares);
 
     /// @notice Redeems `shares` from `owner` and sends `assets`
     /// of underlying tokens to `receiver`.
@@ -54,7 +54,7 @@ interface IERC4626  {
         uint256 shares,
         address receiver,
         address owner
-    ) external virtual returns (uint256 assets);
+    ) external returns (uint256 assets);
 
     /*////////////////////////////////////////////////////////
                       Vault Accounting Logic

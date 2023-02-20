@@ -5,6 +5,10 @@ coverage.json
 typechain
 typechain-types
 
+#Fondry
+
+out
+forge-cache
 # Hardhat files
 cache
 artifacts
