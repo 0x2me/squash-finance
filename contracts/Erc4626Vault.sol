@@ -42,7 +42,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// @notice Mints `shares` Vault shares to `receiver` by
     /// depositing exactly `assets` of underlying tokens.
     function deposit(uint256 assets, address receiver) external returns (uint256 shares){
-        // Check for 0 deposit. This may happes as we round down in preview deposit
+        // Check for 0 deposit. This may happen as we round down in preview deposit
         require((shares = previewDeposit(assets)) != 0, "0_SHARES");
 
         //console.log(shares);
@@ -114,7 +114,9 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// be deposited by `owner` into the Vault, where `owner`
     /// corresponds to the input parameter `receiver` of a
     /// `deposit` call.
-    function maxDeposit(address owner) external view returns (uint256 maxAssets){}
+    function maxDeposit(address owner) external view returns (uint256 maxAssets){
+        return type(uint256).max;
+    }
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their deposit at the current block, given
@@ -126,7 +128,9 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// @notice Total number of underlying shares that can be minted
     /// for `owner`, where `owner` corresponds to the input
     /// parameter `receiver` of a `mint` call.
-    function maxMint(address owner) external view returns (uint256 maxShares){}
+    function maxMint(address owner) external view returns (uint256 maxShares){
+        return type(uint256).max;
+    }
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their mint at the current block, given
@@ -138,22 +142,30 @@ contract ERC4626Vault is IERC4626, ERC20 {
     }
     /// withdrawn from the Vault by `owner`, where `owner`
     /// corresponds to the input parameter of a `withdraw` call.
-    function maxWithdraw(address owner) external view returns (uint256 maxAssets){}
+    function maxWithdraw(address owner) external view returns (uint256 maxAssets){
+        return convertToAssets(vaultAsset.balanceOf(address(owner)));
+    }
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their withdrawal at the current block,
     /// given current on-chain conditions.
-    function previewWithdraw(uint256 assets) external view returns (uint256 shares){}
+    function previewWithdraw(uint256 assets) external view returns (uint256 shares){
+        return convertToShares(assets);
+    }
 
     /// @notice Total number of underlying shares that can be
     /// redeemed from the Vault by `owner`, where `owner` corresponds
     /// to the input parameter of a `redeem` call.
-    function maxRedeem(address owner) external view returns (uint256 maxShares){}
+    function maxRedeem(address owner) external view returns (uint256 maxShares){
+        balanceOf(owner)
+    }
 
     /// @notice Allows an on-chain or off-chain user to simulate
     /// the effects of their redeemption at the current block,
     /// given current on-chain conditions.
-    function previewRedeem(uint256 shares) external view returns (uint256 assets){}
+    function previewRedeem(uint256 shares) external view returns (uint256 assets){
+        return convertToAssets(shares);
+    }
 
 
     /*//////////////////////////////////////////////////////////////
