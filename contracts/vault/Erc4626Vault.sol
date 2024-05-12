@@ -3,7 +3,8 @@ pragma solidity 0.8.17;
 
 import "solmate/tokens/ERC20.sol";
 
-import "./interfaces/IERC4626.sol";
+import "../interfaces/IERC4626.sol";
+import "../interfaces/IStrategy.sol";
 
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
 import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
@@ -33,6 +34,12 @@ contract ERC4626Vault is IERC4626, ERC20 {
     function asset() external view returns (address){
         return address(vaultAsset);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                               Variables
+    //////////////////////////////////////////////////////////////*/
+
+    IStrategy public strategy;
 
 
      /*////////////////////////////////////////////////////////
@@ -114,7 +121,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// be deposited by `owner` into the Vault, where `owner`
     /// corresponds to the input parameter `receiver` of a
     /// `deposit` call.
-    function maxDeposit(address owner) external view returns (uint256 maxAssets){
+    function maxDeposit(address owner) external pure returns (uint256 maxAssets){
         return type(uint256).max;
     }
 
@@ -128,7 +135,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// @notice Total number of underlying shares that can be minted
     /// for `owner`, where `owner` corresponds to the input
     /// parameter `receiver` of a `mint` call.
-    function maxMint(address owner) external view returns (uint256 maxShares){
+    function maxMint(address owner) external pure returns (uint256 maxShares){
         return type(uint256).max;
     }
 
@@ -157,7 +164,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// redeemed from the Vault by `owner`, where `owner` corresponds
     /// to the input parameter of a `redeem` call.
     function maxRedeem(address owner) external view returns (uint256 maxShares){
-        balanceOf(owner)
+        vaultAsset.balanceOf(owner);
     }
 
     /// @notice Allows an on-chain or off-chain user to simulate
@@ -166,6 +173,31 @@ contract ERC4626Vault is IERC4626, ERC20 {
     function previewRedeem(uint256 shares) external view returns (uint256 assets){
         return convertToAssets(shares);
     }
+
+      /**
+     * @dev Custom logic in here for how much the vault allows to be borrowed.
+     * We return 100% of tokens for now. Under certain conditions we might
+     * want to keep some of the system funds at hand in the vault, instead
+     * of putting them to work.
+     */
+    function available() public view returns (uint256) {
+        return vaultAsset.balanceOf(address(this));
+    }
+
+    /*////////////////////////////////////////////////////////
+                      Strategy Logic
+    ////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev Function to send funds into the strategy and put them to work. It's primarily called
+     * by the vault's deposit() function.
+     */
+    function earn() public {
+        uint _bal = available();
+        vaultAsset.safeTransfer(address(strategy), _bal);
+        strategy.deposit();
+    }
+
 
 
     /*//////////////////////////////////////////////////////////////
