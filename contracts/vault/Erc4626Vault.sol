@@ -1,4 +1,3 @@
-/* solhint-disable */
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
@@ -86,10 +85,10 @@ contract ERC4626Vault is IERC4626, ERC20 {
     function withdraw(
         uint256 assets,
         address receiver,
-        address owner
+        address /*owner*/
     ) external returns (uint256 shares) {
         shares = previewWithdraw(assets);
-        _withdraw(msgSender(), receiver, owner, assets, shares);
+        _withdraw(receiver, assets, shares);
 
         return shares;
     }
@@ -104,8 +103,8 @@ contract ERC4626Vault is IERC4626, ERC20 {
     ) internal virtual {
         // Conclusion: we need to do the transfer after the burn so that any reentrancy would happen after the
         // shares are burned and after the assets are transferred, which is a valid state.
-        _burn(owner, shares);
-        SafeTransferLib.safeTransfer(_asset, receiver, assets);
+        _burn(msg.sender, shares);
+        SafeTransferLib.safeTransfer(vaultAsset, receiver, assets);
 
         emit Withdraw(msg.sender, receiver, assets, shares);
     }
