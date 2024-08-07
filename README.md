@@ -1,13 +1,12 @@
-# Sample Hardhat Project
+# Squash Fiance
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Defi yield farm that aim to maximise yield on all the from all the best farms. 
 
-Try running some of the following tasks:
+## How It Works
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+- Utilizes ERC-4626 vaults for standardized yield-bearing tokens
+- Implements strategy swapping mechanism for optimal yield
+- Automatically selects best-performing strategies weekly
+- Aims to maximize returns across various DeFi protocols
+
+
