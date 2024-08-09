@@ -83,7 +83,30 @@ contract ERC4626Vault is IERC4626, ERC20 {
         uint256 assets,
         address receiver,
         address owner
-    ) external returns (uint256 shares){}
+    ) external returns (uint256 shares){
+        uint256 shares = previewWithdraw(assets);
+        _withdraw(_msgSender(), receiver, owner, assets, shares);
+
+        return shares;
+    }
+
+       /**
+     * @dev Withdraw/redeem common workflow.
+     */
+    function _withdraw(
+        address receiver,
+        uint256 assets,
+        uint256 shares
+    ) internal virtual {
+
+        // Conclusion: we need to do the transfer after the burn so that any reentrancy would happen after the
+        // shares are burned and after the assets are transferred, which is a valid state.
+        _burn(owner, shares);
+        SafeTransferLib.safeTransfer(_asset, receiver, assets);
+
+        emit Withdraw(msg.sender, receiver, assets, shares);
+    }
+
 
     /// @notice Redeems `shares` from `owner` and sends `assets`
     /// of underlying tokens to `receiver`.
