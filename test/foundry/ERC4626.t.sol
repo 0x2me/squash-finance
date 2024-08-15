@@ -23,8 +23,6 @@ contract ERC4626Test is Test {
         vm.prank(bob);
         vault.deposit(depoitAmount, bob);
 
-        
-        
         assertEq(underlying.balanceOf(bob), 0);
         assertEq(underlying.balanceOf(address(vault)), depoitAmount);
         assertEq(vault.balanceOf(bob), depoitAmount);
