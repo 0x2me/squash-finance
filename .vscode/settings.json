@@ -8,11 +8,13 @@
   "solidity.remappings": [
     "forge-std/=lib/forge-std/src/",
     "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-    "solmate/=lib/solmate/"
+    "solmate/=lib/solmate/",
+    "forge-std/=lib/forge-std/src/"
   ],
   "solidity.remappingsUnix": [
     "forge-std/=lib/forge-std/src/",
     "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+    "forge-std/=lib/forge-std/src/",
     "solmate/=lib/solmate/"
   ],
   "solidity.defaultCompiler": "remote",
