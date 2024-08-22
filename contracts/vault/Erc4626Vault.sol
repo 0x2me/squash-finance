@@ -9,8 +9,9 @@ import "../interfaces/IStrategy.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
 import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
 import {SafeERC20 as _SafeERC20} from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
+import "openzeppelin-contracts/contracts/access/Ownable.sol";
 
-contract ERC4626Vault is IERC4626, ERC20 {
+contract ERC4626Vault is IERC4626, ERC20, Ownable {
     using SafeTransferLib for ERC20;
     using FixedPointMathLib for uint256;
 
@@ -77,7 +78,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
 
         emit Deposit(msg.sender, receiver, assets, shares);
 
-        afterDeposit(assets, shares);
+        _afterDeposit(assets, shares);
     }
 
     /// @notice Redeems `shares` from `owner` and sends `assets`
@@ -114,8 +115,11 @@ contract ERC4626Vault is IERC4626, ERC20 {
     function redeem(
         uint256 shares,
         address receiver,
-        address owner
-    ) external returns (uint256 assets) {}
+        address /*owner*/
+    ) external returns (uint256 assets) {
+        assets = previewRedeem(shares);
+        _withdraw(receiver, assets, shares);
+    }
 
     /*////////////////////////////////////////////////////////
                       Vault Accounting Logic
@@ -204,7 +208,7 @@ contract ERC4626Vault is IERC4626, ERC20 {
     /// given current on-chain conditions.
     function previewRedeem(
         uint256 shares
-    ) external view returns (uint256 assets) {
+    ) public view returns (uint256 assets) {
         return convertToAssets(shares);
     }
 
@@ -232,11 +236,19 @@ contract ERC4626Vault is IERC4626, ERC20 {
         strategy.deposit();
     }
 
+    /// @notice Sets a new strategy for the vault
+    /// @dev This function can only be called by the owner of the contract
+    /// @param _strategy The address of the new strategy contract to be set
+    /// @custom:security-risk High - Ensure the new strategy is trusted and properly audited
+    function setStrategy(IStrategy _strategy) external onlyOwner {
+        strategy = _strategy;
+    }
+
     /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function beforeWithdraw(uint256 assets, uint256 shares) internal virtual {}
+    function _beforeWithdraw(uint256 assets, uint256 shares) internal virtual {}
 
-    function afterDeposit(uint256 assets, uint256 shares) internal virtual {}
+    function _afterDeposit(uint256 assets, uint256 shares) internal virtual {}
 }
